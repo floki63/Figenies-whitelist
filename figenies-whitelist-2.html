@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Figenies — GTD Whitelist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #D4A853;
+      --gold-light: #F0C97A;
+      --gold-dim: #9A7535;
+      --bg: #080808;
+      --bg2: #0F0F0F;
+      --bg3: #161616;
+      --border: rgba(212,168,83,0.18);
+      --text: #E8E0D0;
+      --muted: #6B6560;
+      --red: #FF4D4D;
+      --green: #4DFFB4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* — BACKGROUND GRAIN + MESH — */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(212,168,83,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(212,168,83,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* — HEADER — */
+    header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 64px 24px 0;
+    }
+
+    .logo-badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 6px 18px;
+      margin-bottom: 32px;
+      text-transform: uppercase;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: clamp(64px, 13vw, 130px);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      background: linear-gradient(160deg, #F0C97A 0%, #D4A853 40%, #9A7535 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-top: 16px;
+      text-transform: uppercase;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    /* — DIVIDER — */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 32px auto;
+    }
+
+    /* — STEPS SECTION — */
+    .steps-section {
+      position: relative;
+      z-index: 10;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .steps-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .steps-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 48px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .step:nth-child(1) { animation-delay: 0.3s; }
+    .step:nth-child(2) { animation-delay: 0.35s; }
+    .step:nth-child(3) { animation-delay: 0.4s; }
+    .step:nth-child(4) { animation-delay: 0.45s; }
+    .step:nth-child(5) { animation-delay: 0.5s; }
+
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--gold-dim);
+      min-width: 32px;
+      line-height: 1;
+    }
+
+    .step-icon {
+      font-size: 18px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .step-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    .step-text span {
+      display: block;
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* — FORM — */
+    .form-section {
+      position: relative;
+      z-index: 10;
+      max-width: 680px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .form-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 40px;
+      animation: fadeUp 0.6s 0.55s ease both;
+    }
+
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.06em;
+      color: var(--gold-light);
+      margin-bottom: 28px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+
+    .field-wrap {
+      position: relative;
+    }
+
+    .field-prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid rgba(212,168,83,0.15);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input.has-prefix { padding-left: 36px; }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--gold-dim);
+      background: #111;
+    }
+
+    input.error { border-color: var(--red); }
+
+    textarea {
+      resize: none;
+      height: 80px;
+      line-height: 1.6;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .error-msg {
+      font-size: 11px;
+      color: var(--red);
+      margin-top: 3px;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    /* — CHECKBOX LIST — */
+    .checklist {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .check-item input[type=checkbox] {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      padding: 0;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .check-item.checked { color: var(--text); }
+
+    /* — SUBMIT — */
+    .submit-btn {
+      width: 100%;
+      margin-top: 28px;
+      background: var(--gold);
+      color: #080808;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.12em;
+      padding: 16px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .submit-btn:hover { background: var(--gold-light); }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: var(--gold-dim); cursor: not-allowed; opacity: 0.6; }
+
+    /* — SUCCESS — */
+    .success-overlay {
+      display: none;
+      text-align: center;
+      padding: 48px 0 20px;
+    }
+
+    .success-overlay.show { display: block; }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .success-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 40px;
+      color: var(--gold-light);
+      letter-spacing: 0.06em;
+    }
+
+    .success-msg {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.7;
+    }
+
+    .success-wallet {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--gold-dim);
+      margin-top: 18px;
+      word-break: break-all;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+    }
+
+    /* — FOOTER — */
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+    }
+
+    footer a { color: var(--gold-dim); text-decoration: none; }
+    footer a:hover { color: var(--gold); }
+
+    /* — ANIM — */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* — RESPONSIVE — */
+    @media (max-width: 520px) {
+      .form-card { padding: 28px 20px; }
+      header { padding-top: 48px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-badge">✦ GTD SPOT ✦</div>
+    <h1>Figenies</h1>
+    <p class="subtitle">Secure your guaranteed spot — limited slots available</p>
+    <div class="divider"></div>
+  </header>
+
+  <!-- STEPS -->
+  <section class="steps-section">
+    <p class="steps-label">// Complete all steps to qualify</p>
+    <div class="steps-grid">
+      <div class="step">
+        <span class="step-num">01</span>
+        <span class="step-icon">𝕏</span>
+        <div class="step-text">Follow <a href="https://x.com/Figenies" target="_blank" style="color:var(--gold)">@Figenies</a> on X<span>Hit the follow button on our official account</span></div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <span class="step-icon">🔁</span>
+        <div class="step-text">Like &amp; Repost the pinned post<span>Engage with our latest pinned announcement</span></div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <span class="step-icon">💬</span>
+        <div class="step-text">Comment — tag your friends &amp; best NFT KOLs<span>Drop a comment on the pinned post with tags</span></div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <span class="step-icon">📋</span>
+        <div class="step-text">Drop your X handle &amp; EVM wallet below<span>Fill in the form to complete your entry</span></div>
+      </div>
+      <div class="step">
+        <span class="step-num">05</span>
+        <span class="step-icon">⏳</span>
+        <div class="step-text">Wait for the GTD announcement<span>Winners notified via X — stay tuned</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="form-section">
+    <div class="form-card">
+
+      <div id="formContent">
+        <div class="form-title">SUBMIT YOUR ENTRY</div>
+
+        <div class="field-group">
+
+          <!-- X Handle -->
+          <div class="field">
+            <label for="xHandle">X (Twitter) Handle</label>
+            <div class="field-wrap">
+              <span class="field-prefix">@</span>
+              <input
+                type="text"
+                id="xHandle"
+                class="has-prefix"
+                placeholder="yourhandle"
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
+            <div class="error-msg" id="xHandleErr">Please enter your X handle.</div>
+          </div>
+
+          <!-- Task confirmations -->
+          <div class="field">
+            <label>Confirm completed tasks</label>
+            <div class="checklist">
+              <label class="check-item" id="chk1label">
+                <input type="checkbox" id="chk1" onchange="toggleCheck('chk1label',this)"/>
+                Followed @Figenies on X
+              </label>
+              <label class="check-item" id="chk2label">
+                <input type="checkbox" id="chk2" onchange="toggleCheck('chk2label',this)"/>
+                Liked &amp; Reposted the pinned post
+              </label>
+              <label class="check-item" id="chk3label">
+                <input type="checkbox" id="chk3" onchange="toggleCheck('chk3label',this)"/>
+                Commented &amp; tagged friends + NFT KOLs
+              </label>
+            </div>
+            <div class="error-msg" id="checksErr">Please confirm all tasks above.</div>
+          </div>
+
+          <!-- Comment proof -->
+          <div class="field">
+            <label for="commentProof">Link to your comment</label>
+            <input
+              type="text"
+              id="commentProof"
+              placeholder="https://x.com/..."
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- EVM Wallet -->
+          <div class="field">
+            <label for="wallet">EVM Wallet Address</label>
+            <input
+              type="text"
+              id="wallet"
+              placeholder="0x..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="error-msg" id="walletErr">Please enter a valid EVM wallet address (0x...).</div>
+          </div>
+
+        </div>
+
+        <button class="submit-btn" onclick="submitForm()">
+          SUBMIT
+        </button>
+
+      </div><!-- /formContent -->
+
+      <!-- SUCCESS STATE -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">✦</div>
+        <div class="success-title">YOU'RE IN THE LIST</div>
+        <p class="success-msg">
+          Your entry has been received.<br/>
+          GTD spots will be announced on X — make sure<br/>
+          you're following <strong style="color:var(--gold)">@Figenies</strong> so you don't miss it.
+        </p>
+        <div class="success-wallet" id="confirmedWallet"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Figenies NFT — <a href="https://x.com/Figenies" target="_blank">@Figenies on X</a> — GTD Spot</p>
+  </footer>
+
+  <script>
+    function toggleCheck(labelId, checkbox) {
+      const label = document.getElementById(labelId);
+      label.classList.toggle('checked', checkbox.checked);
+    }
+
+    function isValidEVM(addr) {
+      return /^0x[0-9a-fA-F]{40}$/.test(addr.trim());
+    }
+
+    function showErr(id, show) {
+      const el = document.getElementById(id);
+      if (show) el.classList.add('show');
+      else el.classList.remove('show');
+    }
+
+    function setInputError(id, hasError) {
+      const el = document.getElementById(id);
+      if (hasError) el.classList.add('error');
+      else el.classList.remove('error');
+    }
+
+    function submitForm() {
+      const xHandle = document.getElementById('xHandle').value.trim();
+      const wallet = document.getElementById('wallet').value.trim();
+      const chk1 = document.getElementById('chk1').checked;
+      const chk2 = document.getElementById('chk2').checked;
+      const chk3 = document.getElementById('chk3').checked;
+      const allChecked = chk1 && chk2 && chk3;
+
+      let valid = true;
+
+      if (!xHandle) {
+        showErr('xHandleErr', true); setInputError('xHandle', true); valid = false;
+      } else {
+        showErr('xHandleErr', false); setInputError('xHandle', false);
+      }
+
+      if (!allChecked) {
+        showErr('checksErr', true); valid = false;
+      } else {
+        showErr('checksErr', false);
+      }
+
+      if (!isValidEVM(wallet)) {
+        showErr('walletErr', true); setInputError('wallet', true); valid = false;
+      } else {
+        showErr('walletErr', false); setInputError('wallet', false);
+      }
+
+      if (!valid) return;
+
+      // Disable button
+      const btn = document.querySelector('.submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'SUBMITTING...';
+
+      // Simulate submission (replace with real API call)
+      setTimeout(() => {
+        document.getElementById('formContent').style.display = 'none';
+        const overlay = document.getElementById('successOverlay');
+        overlay.classList.add('show');
+        document.getElementById('confirmedWallet').textContent =
+          '✦ Wallet registered: ' + wallet;
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>
