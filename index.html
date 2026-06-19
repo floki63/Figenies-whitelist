@@ -714,7 +714,7 @@
               </div>
 
               <label class="field-label" for="proof" style="margin-top:26px;display:block;">Link to your post</label>
-              <input type="url" id="proof" name="proof" placeholder="https://x.com/..." autocomplete="off" aria-describedby="proofError">
+              <input type="text" id="proof" name="proof" placeholder="https://x.com/..." autocomplete="off" aria-describedby="proofError">
               <p class="gate-note">Optional — but it never hurts to be seen.</p>
               <p class="field-error" id="proofError" role="alert"></p>
             </div>
@@ -840,7 +840,7 @@
   var POST_TEXT = "the vessel held them.\n\nit can't anymore\n\n2,222 figenies await their next keeper.\n\nsecure your whitelist spot. figenies.xyz";
   var postOnXLink = document.getElementById('postOnXLink');
   if(postOnXLink){
-    postOnXLink.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(POST_TEXT);
+    postOnXLink.href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(POST_TEXT);
   }
   function copyToClipboard(text){
     function legacyCopy(){
